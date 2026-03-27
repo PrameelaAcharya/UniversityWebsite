@@ -230,7 +230,7 @@
     position: relative;
   }
  .collage-item:nth-child(1) {
-  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaVxsjs_slo1fNkdwzt8oH9Dm8rDnKZlecg&s') center/cover no-repeat;
+  background: url('https://directadmissioninbmscollegeofengineering.in/hubfs/direct%20admission%20in%20bmsce-1.jpeg') center/cover no-repeat;
 }
 
 .collage-item:nth-child(2) {
@@ -896,28 +896,25 @@
   .btn-outline-dark:hover { background: var(--ink); color: var(--paper); }
 
   /* FOOTER */
-  footer {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 3rem 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 2px solid var(--maroon);
-  }
-  .footer-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: var(--paper);
-  }
-  .footer-logo span { color: var(--gold); }
-  .footer-copy {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 0.1em;
-  }
+footer{background:#060f1e;padding:56px 48px 32px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:40px}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+.footer-logo{display:flex;align-items:center;gap:12px;text-decoration:none;margin-bottom:14px}
+.footer-logo img{width:40px;height:40px;border-radius:50%;background:#fff;padding:2px}
+.footer-logo-text{color:#fff;font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;line-height:1.2}
+.footer-about{font-size:.83rem;color:rgba(255,255,255,.4);line-height:1.75;max-width:260px}
+.footer-col h4{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:10px}
+.footer-col a{font-size:.84rem;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s}
+.footer-col a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:.78rem;color:rgba(255,255,255,.3)}
+
+/* BACK TO TOP */
+#btt{position:fixed;bottom:28px;right:28px;width:42px;height:42px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;opacity:0;transform:translateY(16px);transition:all .3s;z-index:500;display:flex;align-items:center;justify-content:center}
+#btt.show{opacity:1;transform:none}
+#btt:hover{background:#a01015}
 
   /* ANIMATIONS */
   @keyframes fadeUp {
@@ -1020,21 +1017,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
   </div>
   <div class="hero-right">
     <div class="hero-grid-bg"></div>
-    <div class="hero-image-collage">
-      <div class="collage-item">
-        <span class="collage-icon">⚙️</span>
-        <span class="collage-tag">Innovation</span>
-        <span class="collage-label">Engineering<br>Excellence</span>
-      </div>
-      <div class="collage-item">
-        <span class="collage-icon">🔬</span>
-        <span class="collage-tag">Research</span>
-        <span class="collage-label">Cutting-edge Labs</span>
-      </div>
-      <div class="collage-item">
-        <span class="collage-icon">🏛️</span>
-        <span class="collage-tag">Legacy</span>
-        <span class="collage-label">Heritage Campus</span>
+<div class="hero-image-collage">
+      <div class="collage-item" style="grid-column:1/-1; grid-row:1/-1;">
+        <div class="collage-icon" style="font-size:8rem; opacity:0.1;">🏛️</div>
+        <div style="position:absolute; inset:0; background:url('https://directadmissioninbmscollegeofengineering.in/hubfs/direct%20admission%20in%20bmsce-1.jpeg') center/cover; background-blend-mode: overlay;"></div>
+        <div style="position:absolute; bottom:2rem; left:2rem;">
+          <div class="collage-tag" style="color:#f0f0f0; background:rgba(0,0,0,0.5);">BMSCE Campus</div>
+          <!-- <div class="collage-label" style="color:rgb(142, 2, 2); font-size:1.8rem; text-shadow:0 2px 10px rgba(0,0,0,0.7);">Heritage & Innovation</div>
+        </div> -->
       </div>
     </div>
     <div class="hero-year">1946</div>
@@ -1426,10 +1416,50 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">BMS<span>CE</span> — Est. 1946</div>
-  <div class="footer-copy">Bull Temple Road, Basavanagudi, Bengaluru 560 019 · +91 80 2662 2130</div>
-  <div class="footer-copy">© 2026 BMS College of Engineering</div>
+  <div class="section-wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="#hero" class="footer-logo">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlPU4j52xRN516UouOaS1HIw4YQ1m3w22H2Q&s">
+          <div class="footer-logo-text">BMS College of Engineering</div>
+        </a>
+        <p class="footer-about">Bull Temple Road, Basavanagudi, Bengaluru – 560019, Karnataka, India.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Academics</h4>
+        <ul>
+          <li><a href="#">Undergraduate</a></li>
+          <li><a href="#">Postgraduate</a></li>
+          <li><a href="#">PhD</a></li>
+          <li><a href="#">Online Learning</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Campus</h4>
+        <ul>
+          <li><a href="#">Library</a></li>
+          <li><a href="#">Hostels</a></li>
+          <li><a href="#">Sports</a></li>
+          <li><a href="#">Research Labs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:admissions@bmsce.ac.in">admissions@bmsce.ac.in</a></li>
+          <li><a href="tel:+918026622130">+91 80 2662 2130</a></li>
+          <li><a href="#">bmsce.ac.in</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 BMS College of Engineering. All rights reserved.</p>
+      <p>Privacy Policy · Terms of Use</p>
+    </div>
+  </div>
 </footer>
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
   // Custom Cursor
