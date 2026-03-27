@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore — BMSCE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --cream: #ede8dc;
+    --gold: #c8922a;
+    --gold-light: #e8b84b;
+    --maroon: #112a54;
+    --teal: #1a6b6b;
+    --sky: #d4e8f0;
+    --accent: #e84b3a;
+    --muted: #6b6460;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--maroon);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, opacity 0.3s;
+    opacity: 0.5;
+  }
+  .cursor.hover { width: 28px; height: 28px; background: var(--maroon); }
+  .cursor-ring.hover { width: 60px; height: 60px; opacity: 0.2; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: #112a54;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,146,42,0.2);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--maroon);
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--maroon); }
+  .nav-cta {
+    background: var(--maroon);
+    color: var(--paper) !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 2px;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 4rem 4rem 5rem;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.3s forwards;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--maroon);
+    display: block;
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 380px;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.7s forwards;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.9s forwards;
+  }
+  .btn-primary {
+    background: var(--maroon);
+    color: var(--paper);
+    padding: 0.9rem 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    cursor: none;
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold); color: var(--ink); transform: translateY(-2px); }
+  .btn-ghost {
+    color: var(--ink);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .btn-ghost:hover { color: var(--maroon); border-color: var(--maroon); }
+
+  .hero-stats {
+    display: flex; gap: 2.5rem;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.1s forwards;
+  }
+  .stat-item { }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--maroon);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+    background: var(--maroon);
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(245,240,232,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,240,232,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .hero-image-collage {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+  .collage-item {
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+ .collage-item:nth-child(1) {
+  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaVxsjs_slo1fNkdwzt8oH9Dm8rDnKZlecg&s') center/cover no-repeat;
+}
+
+.collage-item:nth-child(2) {
+  background: url('https://images.shiksha.com/mediadata/images/1488799325phpZsy1PC.jpeg') center/cover no-repeat;
+}
+
+.collage-item:nth-child(3) {
+  background: url('https://images.shiksha.com/mediadata/images/1642140252php6C2Sgv_270x200.jpg') center/cover no-repeat;
+}
+
+  .collage-icon {
+    font-size: 4rem;
+    opacity: 0.2;
+    position: absolute;
+  }
+  .collage-label {
+    position: absolute; bottom: 1.5rem; left: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    opacity: 0.8;
+  }
+  .collage-tag {
+    position: absolute; top: 1.2rem; right: 1.2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+  }
+  .hero-year {
+    position: absolute;
+    top: 50%; right: -20px;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* TICKER */
+  .ticker {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.75rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+  }
+  .ticker-inner {
+    display: inline-flex;
+    gap: 3rem;
+    animation: ticker 25s linear infinite;
+  }
+  .ticker-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .ticker-dot { color: var(--gold); margin: 0 0.5rem; }
+
+  /* SECTION BASE */
+  section { padding: 6rem 5rem; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--gold);
+    display: inline-block;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 3.5vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  /* EXPLORE GRID */
+  .explore-section { background: var(--cream); }
+  .explore-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+    margin-top: 3.5rem;
+  }
+  .explore-card {
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .explore-card:hover { transform: translateY(-6px); }
+  .explore-card .card-inner {
+    padding: 2.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 260px;
+    position: relative;
+    z-index: 2;
+  }
+  .explore-card .card-bg {
+    position: absolute; inset: 0;
+    transition: transform 0.6s ease;
+  }
+  .explore-card:hover .card-bg { transform: scale(1.04); }
+  .card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    opacity: 0.12;
+    line-height: 1;
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+  }
+  .card-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: auto;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 1rem 0 0.5rem;
+  }
+  .card-desc {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    opacity: 0.75;
+  }
+  .card-arrow {
+    width: 36px; height: 36px;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1.5rem;
+    transition: transform 0.3s, background 0.3s;
+    font-size: 0.8rem;
+  }
+  .explore-card:hover .card-arrow { transform: translate(3px, -3px); }
+
+  /* Card Colors */
+  .card-maroon .card-bg { background: var(--maroon); }
+  .card-maroon { color: var(--paper); }
+  .card-maroon .card-arrow:hover { background: rgba(255,255,255,0.15); }
+
+  .card-gold .card-bg { background: var(--gold); }
+  .card-gold { color: var(--ink); }
+
+  .card-teal .card-bg { background: var(--teal); }
+  .card-teal { color: var(--paper); }
+
+  .card-ink .card-bg { background: var(--ink); }
+  .card-ink { color: var(--paper); }
+
+  .card-sky .card-bg { background: var(--sky); }
+  .card-sky { color: var(--ink); }
+
+  .card-cream2 .card-bg { background: #e8e0d0; }
+  .card-cream2 { color: var(--ink); border: 1px solid rgba(0,0,0,0.08); }
+
+  /* Grid layout for cards */
+  .gc-1 { grid-column: span 4; }
+  .gc-2 { grid-column: span 8; }
+  .gc-3 { grid-column: span 3; }
+  .gc-4 { grid-column: span 5; }
+  .gc-5 { grid-column: span 4; }
+  .gc-6 { grid-column: span 6; }
+
+  .gc-2 .card-inner { min-height: 300px; }
+  .gc-2 .card-title { font-size: 2.2rem; }
+
+  /* DEPARTMENTS INTERACTIVE */
+  .dept-section { background: var(--paper); }
+  .dept-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 4rem;
+    margin-top: 3.5rem;
+    align-items: start;
+  }
+  .dept-list { }
+  .dept-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    cursor: none;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .dept-item::before {
+    content: '';
+    position: absolute; left: -1rem;
+    width: 3px; height: 0;
+    background: var(--maroon);
+    transition: height 0.3s ease;
+    top: 50%; transform: translateY(-50%);
+  }
+  .dept-item:hover::before,
+  .dept-item.active::before { height: 60%; }
+  .dept-item:hover, .dept-item.active {
+    padding-left: 0.5rem;
+  }
+  .dept-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    width: 30px;
+    flex-shrink: 0;
+  }
+  .dept-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    flex: 1;
+    transition: color 0.3s;
+  }
+  .dept-item:hover .dept-name,
+  .dept-item.active .dept-name { color: var(--maroon); }
+  .dept-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    background: var(--cream);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+  }
+  .dept-chevron {
+    font-size: 0.8rem;
+    color: var(--muted);
+    transition: transform 0.3s, color 0.3s;
+  }
+  .dept-item:hover .dept-chevron { transform: translateX(4px); color: var(--maroon); }
+
+  .dept-detail {
+    position: sticky;
+    top: 8rem;
+    background: var(--maroon);
+    color: var(--paper);
+    padding: 3rem;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.4s ease;
+  }
+  .dept-detail-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+  }
+  .dept-detail-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .dept-detail-desc {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    opacity: 0.8;
+    flex: 1;
+    margin-bottom: 1.5rem;
+  }
+  .dept-detail-stats {
+    display: flex; gap: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+  .dept-detail-stat .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--gold-light);
+  }
+  .dept-detail-stat .lbl {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .dept-detail-bg {
+    position: absolute;
+    bottom: 0; right: 0;
+    font-size: 12rem;
+    opacity: 0.05;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  /* CAMPUS LIFE MAP */
+  .campus-section {
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .campus-section .section-label { color: var(--gold-light); }
+  .campus-section .section-title { color: var(--paper); }
+  .campus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    margin-top: 3.5rem;
+    background: rgba(255,255,255,0.06);
+  }
+  .campus-tile {
+    padding: 2.5rem;
+    background: rgba(13,13,13,0.9);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: background 0.4s;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .campus-tile:hover { background: var(--maroon); }
+  .campus-tile-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    transition: transform 0.4s;
+  }
+  .campus-tile:hover .campus-tile-icon { transform: scale(1.2) rotate(-5deg); }
+  .campus-tile-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .campus-tile-sub {
+    font-size: 0.78rem;
+    opacity: 0.5;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .campus-tile-num {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  /* RESEARCH SPOTLIGHT */
+  .research-section { background: var(--cream); }
+  .research-scroll {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scrollbar-width: none;
+  }
+  .research-scroll::-webkit-scrollbar { display: none; }
+  .research-card {
+    flex-shrink: 0;
+    width: 320px;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 2rem;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    background: var(--paper);
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .research-card:hover { border-color: var(--maroon); transform: translateY(-4px); }
+  .research-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--maroon);
+    transition: height 0.4s ease;
+  }
+  .research-card:hover::before { height: 100%; }
+  .research-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    background: rgba(122,28,46,0.08);
+    padding: 0.25rem 0.6rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+  .research-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+  }
+  .research-pi {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .research-desc {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  /* EVENTS */
+  .events-section { background: var(--paper); }
+  .events-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 4rem;
+    margin-top: 3.5rem;
+  }
+  .event-featured {
+    background: var(--maroon);
+    color: var(--paper);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+  .event-date-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 0.6rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .event-date-badge .day {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .event-date-badge .month {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .event-featured-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .event-featured-desc {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    opacity: 0.8;
+    margin-bottom: 1.5rem;
+  }
+  .event-meta {
+    display: flex; gap: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    text-transform: uppercase;
+  }
+  .event-list { display: flex; flex-direction: column; gap: 1rem; }
+  .event-item {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+    padding: 1rem;
+    border: 1px solid rgba(0,0,0,0.08);
+    cursor: none;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .event-item:hover { border-color: var(--maroon); background: var(--cream); }
+  .event-item-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--maroon);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 40px;
+    text-align: center;
+  }
+  .event-item-month {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .event-item-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .event-item-type {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ALUMNI */
+  .alumni-section {
+    background: var(--maroon);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .alumni-section .section-label { color: var(--gold-light); }
+  .alumni-section .section-title { color: var(--paper); }
+  .alumni-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .alumni-card {
+    padding: 2rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: none;
+    transition: background 0.3s, border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .alumni-card:hover { background: rgba(255,255,255,0.05); border-color: var(--gold-light); }
+  .alumni-avatar {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+  .alumni-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .alumni-batch {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--gold-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .alumni-role {
+    font-size: 0.78rem;
+    opacity: 0.6;
+    line-height: 1.4;
+  }
+  .alumni-quote {
+    font-style: italic;
+    font-size: 0.82rem;
+    opacity: 0.7;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    line-height: 1.5;
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* APPLY CTA */
+  .cta-section {
+    background: var(--gold);
+    color: var(--ink);
+    text-align: center;
+    padding: 6rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::before {
+    content: 'BMSCE';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 20vw;
+    font-weight: 900;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.06;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-sub {
+    font-size: 1rem;
+    opacity: 0.7;
+    max-width: 450px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-actions { position: relative; z-index: 1; display: flex; gap: 1rem; justify-content: center; }
+  .btn-dark {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1rem 2.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .btn-dark:hover { background: var(--maroon); transform: translateY(-2px); }
+  .btn-outline-dark {
+    border: 2px solid var(--ink);
+    color: var(--ink);
+    padding: 1rem 2.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+  }
+  .btn-outline-dark:hover { background: var(--ink); color: var(--paper); }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3rem 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 2px solid var(--maroon);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--paper);
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(13,31,60,0.97);backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo img{width:50px;height:50px;border-radius:60%;object-fit:contain;background:#fff;}
+.logo-text{color:#fff;font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;line-height:1}
+.logo-text span{color:var(--gold);font-size:.72rem;font-weight:400;display:block;letter-spacing:.08em;font-family:'Source Sans 3',sans-serif}
+.nav-links{display:flex;gap:6px;list-style:none}
+.nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:.82rem;font-weight:500;padding:7px 14px;border-radius:4px;transition:all .2s;letter-spacing:.03em}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.1)}
+.nav-links .apply-btn{background:var(--red);color:#fff!important;padding:7px 18px}
+.nav-links .apply-btn:hover{background:#a01015}
+@media(max-width:768px){.nav-links{display:none}}
+
+/* QUICKNAV */
+#quicknav{background:var(--navy);padding:0 10px;display:flex;gap:0;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
+#quicknav::-webkit-scrollbar{display:none}
+.qb{display:flex;align-items:center;gap:6px;padding:10px 22px;color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s}
+.qb:hover{color:#fff;border-bottom-color:var(--red)}
+
+</style>
+</head>
+<body>
+
+
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+ <nav>
+  <a href="#hero" class="logo">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlPU4j52xRN516UouOaS1HIw4YQ1m3w22H2Q&s">
+  <div class="logo-text">BMS College of Engineering<span>Bengaluru — Est. 1946</span></div>
+  </a>
+  <ul class="nav-links">
+  <div id="quicknav">
+  <li><a href="#explore" class="qb">Explore</a></li>
+  <li><a href="#departments" class="qb">Departments</a></li>
+  <li><a href="#research" class="qb">Research</a></li>
+  <li><a href="#campus" class="qb">Campus</a></li>
+  <li><a href="#events" class="qb">Events</a></li>
+  <li><a href="#apply" class="apply-btn">Apply Now</a></li>
+</div></ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Est. 1946 · Bengaluru, Karnataka</p>
+    <h1 class="hero-title">
+      Where Ideas<br>
+      <em>Take Shape.</em>
+    </h1>
+    <p class="hero-sub">BMS College of Engineering — shaping engineers, innovators, and leaders who build the future with precision and purpose.</p>
+    <div class="hero-actions">
+      <a href="#explore" class="btn-primary">Explore BMSCE</a>
+      <a href="#departments" class="btn-ghost">View Departments →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">78+</div>
+        <div class="stat-label">Years of Excellence</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">15k+</div>
+        <div class="stat-label">Alumni Worldwide</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">18</div>
+        <div class="stat-label">Departments</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-image-collage">
+      <div class="collage-item">
+        <span class="collage-icon">⚙️</span>
+        <span class="collage-tag">Innovation</span>
+        <span class="collage-label">Engineering<br>Excellence</span>
+      </div>
+      <div class="collage-item">
+        <span class="collage-icon">🔬</span>
+        <span class="collage-tag">Research</span>
+        <span class="collage-label">Cutting-edge Labs</span>
+      </div>
+      <div class="collage-item">
+        <span class="collage-icon">🏛️</span>
+        <span class="collage-tag">Legacy</span>
+        <span class="collage-label">Heritage Campus</span>
+      </div>
+    </div>
+    <div class="hero-year">1946</div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">Autonomous Institute <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">NBA Accredited <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">NAAC A+ Grade <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">VTU Affiliated <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Ranked Among Top 50 Engineering Colleges India <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">BMS Educational Trust <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">100% Placement Record <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Autonomous Institute <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">NBA Accredited <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">NAAC A+ Grade <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">VTU Affiliated <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Ranked Among Top 50 Engineering Colleges India <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">BMS Educational Trust <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">100% Placement Record <span class="ticker-dot">◆</span></span>
+  </div>
+</div>
+
+<!-- EXPLORE GRID -->
+<section class="explore-section" id="explore">
+  <div class="section-label">Discover</div>
+  <h2 class="section-title">Everything<br><em style="font-style:italic">BMSCE</em> Offers</h2>
+  <div class="explore-grid">
+    <div class="explore-card card-maroon gc-2 reveal">
+      <div class="card-bg"></div>
+      <div class="card-inner">
+        <div>
+          <span class="card-tag">Flagship Program</span>
+          <div class="card-num">01</div>
+        </div>
+        <div>
+          <div class="card-title">B.E. / B.Tech<br>Undergraduate Programs</div>
+          <p class="card-desc">18 engineering disciplines with state-of-the-art labs, industry-integrated curriculum, and project-based learning designed for the 21st century.</p>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+    <div class="explore-card card-gold gc-1 reveal reveal-delay-1">
+      <div class="card-bg"></div>
+      <div class="card-inner">
+        <div>
+          <span class="card-tag">Advanced Study</span>
+          <div class="card-num">02</div>
+        </div>
+        <div>
+          <div class="card-title">M.Tech &amp; MBA</div>
+          <p class="card-desc">Specialised postgraduate programs in engineering and management.</p>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+    <div class="explore-card card-teal gc-3 reveal reveal-delay-1">
+      <div class="card-bg"></div>
+      <div class="card-inner">
+        <div>
+          <span class="card-tag">Scholarship</span>
+          <div class="card-num">03</div>
+        </div>
+        <div>
+          <div class="card-title">Ph.D Research</div>
+          <p class="card-desc">Doctoral programs across all departments with funded research.</p>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+    <div class="explore-card card-ink gc-5 reveal reveal-delay-2">
+      <div class="card-bg"></div>
+      <div class="card-inner">
+        <div>
+          <span class="card-tag">Innovation Hub</span>
+          <div class="card-num">04</div>
+        </div>
+        <div>
+          <div class="card-title">BMSCE Centre for<br>Innovation &amp; Startups</div>
+          <p class="card-desc">Launch your startup with mentorship, funding support, and co-working space inside a thriving innovation ecosystem.</p>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+    <div class="explore-card card-sky gc-4 reveal reveal-delay-2">
+      <div class="card-bg"></div>
+      <div class="card-inner">
+        <div>
+          <span class="card-tag">Industry Connect</span>
+          <div class="card-num">05</div>
+        </div>
+        <div>
+          <div class="card-title">Placements &amp; Internships</div>
+          <p class="card-desc">500+ recruiting companies. Average packages exceeding industry norms with dedicated career development teams.</p>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+    <div class="explore-card card-cream2 gc-6 reveal reveal-delay-3">
+      <div class="card-bg"></div>
+      <div class="card-inner">
+        <div>
+          <span class="card-tag">Student Life</span>
+          <div class="card-num">06</div>
+        </div>
+        <div>
+          <div class="card-title">Clubs &amp; Extracurriculars</div>
+          <p class="card-desc">50+ student clubs from robotics to theatre. Annual fests Utsaha and Tantrotsava attract thousands from across India.</p>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+    <div class="explore-card card-maroon gc-6 reveal reveal-delay-1">
+      <div class="card-bg"></div>
+      <div class="card-inner">
+        <div>
+          <span class="card-tag">Exchange Programs</span>
+          <div class="card-num">07</div>
+        </div>
+        <div>
+          <div class="card-title">Global Collaborations</div>
+          <p class="card-desc">MOUs with 30+ universities worldwide including TU Munich, NUS Singapore, and Penn State for student exchange and joint research.</p>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPARTMENTS -->
+<section class="dept-section" id="departments">
+  <div class="section-label">Academic Units</div>
+  <h2 class="section-title">Our Departments</h2>
+  <div class="dept-layout">
+    <div class="dept-list" id="deptList">
+      <!-- Populated by JS -->
+    </div>
+    <div class="dept-detail" id="deptDetail">
+      <div style="position:relative; z-index:2;">
+        <div class="dept-detail-tag" id="dDetailTag">Flagship Department</div>
+        <div class="dept-detail-name" id="dDetailName">Computer Science &amp; Engineering</div>
+        <div class="dept-detail-desc" id="dDetailDesc">One of the most sought-after departments in South India, offering specializations in AI/ML, cybersecurity, data science, and cloud computing. The department boasts world-class labs and industry partnerships with Google, Microsoft, and Infosys.</div>
+        <div class="dept-detail-stats">
+          <div class="dept-detail-stat">
+            <div class="num" id="dDetailFaculty">35</div>
+            <div class="lbl">Faculty</div>
+          </div>
+          <div class="dept-detail-stat">
+            <div class="num" id="dDetailStudents">960</div>
+            <div class="lbl">Students</div>
+          </div>
+          <div class="dept-detail-stat">
+            <div class="num" id="dDetailLabs">12</div>
+            <div class="lbl">Labs</div>
+          </div>
+        </div>
+      </div>
+      <div class="dept-detail-bg" id="dDetailBg">CSE</div>
+    </div>
+  </div>
+</section>
+
+<!-- CAMPUS LIFE -->
+<section class="campus-section" id="campus">
+  <div class="section-label">Life at BMSCE</div>
+  <h2 class="section-title">The Campus Experience</h2>
+  <div class="campus-grid">
+    <div class="campus-tile reveal">
+      <span class="campus-tile-num">01</span>
+      <div class="campus-tile-icon">📚</div>
+      <div class="campus-tile-title">Central Library</div>
+      <div class="campus-tile-sub">1.2 Lakh+ books · 24/7 digital access</div>
+    </div>
+    <div class="campus-tile reveal reveal-delay-1">
+      <span class="campus-tile-num">02</span>
+      <div class="campus-tile-icon">🏟️</div>
+      <div class="campus-tile-title">Sports Complex</div>
+      <div class="campus-tile-sub">Cricket · Football · Basketball · Gym</div>
+    </div>
+    <div class="campus-tile reveal reveal-delay-2">
+      <span class="campus-tile-num">03</span>
+      <div class="campus-tile-icon">🔬</div>
+      <div class="campus-tile-title">Research Labs</div>
+      <div class="campus-tile-sub">80+ specialized labs · Industry-grade equipment</div>
+    </div>
+    <div class="campus-tile reveal reveal-delay-1">
+      <span class="campus-tile-num">04</span>
+      <div class="campus-tile-icon">🏠</div>
+      <div class="campus-tile-title">Hostels</div>
+      <div class="campus-tile-sub">Separate boys & girls · 2000+ capacity</div>
+    </div>
+    <div class="campus-tile reveal reveal-delay-2">
+      <span class="campus-tile-num">05</span>
+      <div class="campus-tile-icon">🎭</div>
+      <div class="campus-tile-title">Auditorium</div>
+      <div class="campus-tile-sub">3000-seat · State-of-the-art acoustics</div>
+    </div>
+    <div class="campus-tile reveal reveal-delay-3">
+      <span class="campus-tile-num">06</span>
+      <div class="campus-tile-icon">🍜</div>
+      <div class="campus-tile-title">Food Court</div>
+      <div class="campus-tile-sub">Multiple cuisines · Hygienic canteens</div>
+    </div>
+    <div class="campus-tile reveal reveal-delay-2">
+      <span class="campus-tile-num">07</span>
+      <div class="campus-tile-icon">🤖</div>
+      <div class="campus-tile-title">Innovation Hub</div>
+      <div class="campus-tile-sub">Makerspace · 3D printing · Fabrication</div>
+    </div>
+    <div class="campus-tile reveal reveal-delay-3">
+      <span class="campus-tile-num">08</span>
+      <div class="campus-tile-icon">🌳</div>
+      <div class="campus-tile-title">Green Campus</div>
+      <div class="campus-tile-sub">Solar energy · Rainwater harvesting</div>
+    </div>
+    <div class="campus-tile reveal">
+      <span class="campus-tile-num">09</span>
+      <div class="campus-tile-icon">💻</div>
+      <div class="campus-tile-title">Digital Infrastructure</div>
+      <div class="campus-tile-sub">10 Gbps campus-wide Wi-Fi network</div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section class="research-section" id="research">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <div class="section-label">Scholarly Pursuit</div>
+      <h2 class="section-title">Research<br>Spotlight</h2>
+    </div>
+    <a href="#" class="btn-ghost" style="color:var(--ink); border-color:var(--ink);">View All Research →</a>
+  </div>
+  <div class="research-scroll">
+    <div class="research-card">
+      <span class="research-tag">AI / Machine Learning</span>
+      <div class="research-title">Deep Learning Approaches for Kannada Script Recognition</div>
+      <div class="research-pi">Dr. Meena S. · CSE Department</div>
+      <div class="research-desc">Novel CNN architectures achieving 98.7% accuracy on handwritten Kannada numeral datasets with real-world OCR applications.</div>
+    </div>
+    <div class="research-card">
+      <span class="research-tag">Sustainable Engineering</span>
+      <div class="research-title">Bio-inspired Composite Materials for Aerospace Structures</div>
+      <div class="research-pi">Prof. Ravi K. · Mechanical Engineering</div>
+      <div class="research-desc">Lightweight carbon-fiber reinforced polymers inspired by bamboo microstructures. 40% weight reduction with superior tensile strength.</div>
+    </div>
+    <div class="research-card">
+      <span class="research-tag">Power Electronics</span>
+      <div class="research-title">Smart Grid Integration of Rooftop Solar with Demand Forecasting</div>
+      <div class="research-pi">Dr. Anitha P. · EEE Department</div>
+      <div class="research-desc">AI-driven demand-response systems enabling seamless renewable integration for urban microgrids in Bengaluru.</div>
+    </div>
+    <div class="research-card">
+      <span class="research-tag">Biomedical Engineering</span>
+      <div class="research-title">Non-invasive Glucose Monitoring via Near-Infrared Spectroscopy</div>
+      <div class="research-pi">Dr. Kiran J. · ECE Department</div>
+      <div class="research-desc">Portable wearable device using NIR optics for continuous blood glucose monitoring, clinically validated with 200+ subjects.</div>
+    </div>
+    <div class="research-card">
+      <span class="research-tag">Cybersecurity</span>
+      <div class="research-title">Zero-Trust Architecture for Industrial IoT Networks</div>
+      <div class="research-pi">Prof. Ashwin M. · ISE Department</div>
+      <div class="research-desc">Lightweight cryptographic protocols ensuring end-to-end security for resource-constrained IIoT edge devices.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section class="events-section" id="events">
+  <div class="section-label">What's On</div>
+  <h2 class="section-title">Upcoming Events</h2>
+  <div class="events-layout">
+    <div class="event-featured">
+      <div class="event-date-badge">
+        <span class="day">14</span>
+        <span class="month">Apr 2026</span>
+      </div>
+      <div class="event-featured-title">Tantrotsava 2026 — The Annual Technical Festival</div>
+      <div class="event-featured-desc">Three days of hackathons, paper presentations, robotics challenges, coding competitions, and industry keynotes. The biggest tech fest in Karnataka draws 8,000+ participants from 200+ colleges.</div>
+      <div class="event-meta">
+        <span>📍 BMSCE Campus</span>
+        <span>🕘 3 Days</span>
+        <span>🎫 Free Entry</span>
+      </div>
+    </div>
+    <div class="event-list">
+      <div class="event-item">
+        <div>
+          <div class="event-item-date">28</div>
+          <div class="event-item-month">Mar</div>
+        </div>
+        <div>
+          <div class="event-item-name">BMSCE Career Summit 2026</div>
+          <div class="event-item-type">Placement Event · All Branches</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div>
+          <div class="event-item-date">05</div>
+          <div class="event-item-month">Apr</div>
+        </div>
+        <div>
+          <div class="event-item-name">IEEE Student Branch Symposium</div>
+          <div class="event-item-type">Technical Talk · ECE / EEE</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div>
+          <div class="event-item-date">10</div>
+          <div class="event-item-month">Apr</div>
+        </div>
+        <div>
+          <div class="event-item-name">Utsaha — Cultural Festival</div>
+          <div class="event-item-type">Cultural Fest · All Students</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div>
+          <div class="event-item-date">20</div>
+          <div class="event-item-month">Apr</div>
+        </div>
+        <div>
+          <div class="event-item-name">Research Paper Presentation Day</div>
+          <div class="event-item-type">Academic · PG & Ph.D Students</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div>
+          <div class="event-item-date">02</div>
+          <div class="event-item-month">May</div>
+        </div>
+        <div>
+          <div class="event-item-name">Startup Pitch Day — BMSCE Incubator</div>
+          <div class="event-item-type">Entrepreneurship · Open to All</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALUMNI -->
+<section class="alumni-section">
+  <div class="section-label">Our Community</div>
+  <h2 class="section-title">Notable Alumni</h2>
+  <div class="alumni-grid">
+    <div class="alumni-card">
+      <div class="alumni-avatar">👨‍💼</div>
+      <div class="alumni-name">Ananth Krishnan</div>
+      <div class="alumni-batch">Batch of 1989 · CSE</div>
+      <div class="alumni-role">CTO, Tata Consultancy Services</div>
+      <div class="alumni-quote">"BMSCE gave me not just an education, but a compass for life."</div>
+    </div>
+    <div class="alumni-card">
+      <div class="alumni-avatar">👩‍🔬</div>
+      <div class="alumni-name">Priya Rajkumar</div>
+      <div class="alumni-batch">Batch of 2005 · Biotech</div>
+      <div class="alumni-role">Principal Scientist, Biocon Biologics</div>
+      <div class="alumni-quote">"The research culture here is second to none in South India."</div>
+    </div>
+    <div class="alumni-card">
+      <div class="alumni-avatar">👨‍🚀</div>
+      <div class="alumni-name">Vikram Nair</div>
+      <div class="alumni-batch">Batch of 1997 · Mechanical</div>
+      <div class="alumni-role">Programme Director, ISRO, Bengaluru</div>
+      <div class="alumni-quote">"Every project we launched had BMSCE's foundation behind it."</div>
+    </div>
+    <div class="alumni-card">
+      <div class="alumni-avatar">👩‍💻</div>
+      <div class="alumni-name">Deepa Srinivasan</div>
+      <div class="alumni-batch">Batch of 2012 · ISE</div>
+      <div class="alumni-role">Engineering Manager, Google, Hyderabad</div>
+      <div class="alumni-quote">"The problem-solving mindset I developed here is invaluable."</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="apply">
+  <h2 class="cta-title">Ready to Build<br>Your Future?</h2>
+  <p class="cta-sub">Applications for 2026–27 are now open. Join 15,000+ engineers who chose BMSCE as their launchpad.</p>
+  <div class="cta-actions">
+    <a href="#" class="btn-dark">Apply for 2026–27</a>
+    <a href="#" class="btn-outline-dark">Download Brochure</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BMS<span>CE</span> — Est. 1946</div>
+  <div class="footer-copy">Bull Temple Road, Basavanagudi, Bengaluru 560 019 · +91 80 2662 2130</div>
+  <div class="footer-copy">© 2026 BMS College of Engineering</div>
+</footer>
+
+<script>
+  // Custom Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .explore-card, .dept-item, .campus-tile, .research-card, .event-item, .alumni-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+  });
+
+  // Scroll Reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Departments Interactive
+  const departments = [
+    { num: '01', name: 'Computer Science & Engg.', count: '960 students', tag: 'Flagship Department', desc: 'One of the most sought-after departments in South India, offering specializations in AI/ML, cybersecurity, data science, and cloud computing. Partnerships with Google, Microsoft, and Infosys.', faculty: 35, students: 960, labs: 12, abbr: 'CSE' },
+    { num: '02', name: 'Electronics & Communication', count: '720 students', tag: 'Core Engineering', desc: 'Covers VLSI design, embedded systems, wireless communications, and signal processing. State-of-the-art VLSI and Communication labs with MATLAB and NI hardware.', faculty: 28, students: 720, labs: 10, abbr: 'ECE' },
+    { num: '03', name: 'Mechanical Engineering', count: '600 students', tag: 'Legacy Department', desc: 'The oldest and most storied department at BMSCE. Covers thermal, manufacturing, CAD/CAM, and materials. Home to the Fluid Mechanics and Machine Dynamics labs.', faculty: 32, students: 600, labs: 14, abbr: 'ME' },
+    { num: '04', name: 'Information Science & Engg.', count: '480 students', tag: 'Emerging Tech', desc: 'Focuses on data analytics, network security, database management, and software engineering. Strong industry connect with startups and MNCs in Bengaluru\'s tech hub.', faculty: 22, students: 480, labs: 8, abbr: 'ISE' },
+    { num: '05', name: 'Electrical & Electronics', count: '360 students', tag: 'Power & Control', desc: 'Specialises in power systems, control engineering, smart grids, and electric vehicles. Closely tied to BESCOM, KPTCL, and energy sector partners.', faculty: 20, students: 360, labs: 9, abbr: 'EEE' },
+    { num: '06', name: 'Civil Engineering', count: '300 students', tag: 'Infrastructure', desc: 'Structural engineering, transportation, geotechnical, and environmental engineering. Students work on live infrastructure projects across Karnataka.', faculty: 18, students: 300, labs: 7, abbr: 'CVL' },
+    { num: '07', name: 'Chemical Engineering', count: '240 students', tag: 'Process & Materials', desc: 'Chemical reaction engineering, process design, thermodynamics, and polymer science. Collaborates with pharma and chemical industries in the region.', faculty: 16, students: 240, labs: 8, abbr: 'CHE' },
+    { num: '08', name: 'Biotechnology', count: '180 students', tag: 'Life Sciences', desc: 'Genomics, metabolic engineering, bioinformatics, and industrial biotech. Strong collaboration with Biocon, Strand Life Sciences, and NCBS Bengaluru.', faculty: 14, students: 180, labs: 6, abbr: 'BT' },
+  ];
+
+  const deptList = document.getElementById('deptList');
+  departments.forEach((d, i) => {
+    const item = document.createElement('div');
+    item.className = 'dept-item' + (i === 0 ? ' active' : '');
+    item.innerHTML = `
+      <span class="dept-num">${d.num}</span>
+      <span class="dept-name">${d.name}</span>
+      <span class="dept-count">${d.count}</span>
+      <span class="dept-chevron">›</span>
+    `;
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.dept-item').forEach(el => el.classList.remove('active'));
+      item.classList.add('active');
+      document.getElementById('dDetailTag').textContent = d.tag;
+      document.getElementById('dDetailName').textContent = d.name;
+      document.getElementById('dDetailDesc').textContent = d.desc;
+      document.getElementById('dDetailFaculty').textContent = d.faculty;
+      document.getElementById('dDetailStudents').textContent = d.students;
+      document.getElementById('dDetailLabs').textContent = d.labs;
+      document.getElementById('dDetailBg').textContent = d.abbr;
+      const detail = document.getElementById('deptDetail');
+      detail.style.opacity = '0';
+      detail.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        detail.style.opacity = '1';
+        detail.style.transform = 'translateY(0)';
+      }, 50);
+    });
+    item.style.cursor = 'none';
+    deptList.appendChild(item);
+  });
+
+  // Smooth transition for dept detail
+  document.getElementById('deptDetail').style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
